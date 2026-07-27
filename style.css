@@ -571,3 +571,184 @@ footer {
 [id] {
   scroll-margin-top: 76px;
 }
+
+/* ── pricing + contact pages ──────────────────────────────── */
+.narrow h1 {
+  max-width: 18ch;
+}
+.narrow .lede {
+  max-width: 56ch;
+}
+
+.tiers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+}
+.tier {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 30px 26px 26px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+}
+.tier.mark {
+  border-color: var(--ada-dim);
+}
+.ribbon {
+  position: absolute;
+  top: -1px;
+  right: 18px;
+  margin: 0;
+  padding: 4px 11px;
+  background: var(--ada);
+  color: var(--void);
+  font: 500 10px var(--mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  border-radius: 0 0 4px 4px;
+}
+.tier h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dim);
+  font-family: var(--mono);
+}
+.price {
+  margin: 12px 0 2px;
+  font-family: var(--mono);
+  color: var(--dim);
+  font-size: 13px;
+}
+.price b {
+  font-size: 42px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+.price span {
+  margin-left: 3px;
+}
+.tag {
+  margin: 0 0 22px;
+  font-size: 14.5px;
+  color: var(--ada);
+}
+.ticks {
+  flex: 1;
+  margin: 0 0 24px;
+  padding: 0;
+  list-style: none;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+.ticks li {
+  position: relative;
+  padding: 0 0 11px 22px;
+  line-height: 1.5;
+}
+.ticks li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.52em;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--ada-dim);
+}
+.block {
+  display: block;
+  text-align: center;
+}
+.under {
+  margin: 13px 0 0;
+  font: 400 12.5px/1.5 var(--mono);
+  color: var(--dim);
+}
+.wide-list {
+  max-width: 70ch;
+  margin-bottom: 0;
+}
+
+.faq {
+  display: grid;
+  gap: 1px;
+  margin: 30px 0 0;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.faq div {
+  background: var(--panel);
+  padding: 22px 26px;
+}
+.faq dt {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.faq dd {
+  margin: 0;
+  max-width: 74ch;
+  font-size: 15.5px;
+  color: var(--ink-2);
+}
+
+.routes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 18px;
+}
+.route {
+  display: flex;
+  flex-direction: column;
+  padding: 26px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  color: inherit;
+  transition:
+    border-color 0.18s,
+    background 0.18s;
+}
+.route:hover {
+  border-color: var(--ada);
+  background: var(--panel-2);
+  text-decoration: none;
+}
+.rnum {
+  font: 500 11px var(--mono);
+  letter-spacing: 0.2em;
+  color: var(--ada);
+  margin-bottom: 12px;
+}
+.route h2 {
+  margin: 0 0 9px;
+  font-size: 21px;
+  letter-spacing: -0.02em;
+}
+.route p {
+  flex: 1;
+  margin: 0 0 18px;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+.route .go {
+  font: 500 12.5px var(--mono);
+  letter-spacing: 0.05em;
+  color: var(--ada);
+}
+
+/* subpage heroes are short — don't stack two full section paddings under them */
+.hero.narrow {
+  padding-bottom: clamp(22px, 3vw, 38px);
+}
+.hero.narrow + .band {
+  padding-top: clamp(26px, 3.4vw, 42px);
+}

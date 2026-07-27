@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pricing — Ada</title>
+    <meta
+      name="description"
+      content="Free forever with your own key. Hosted routing from $19/month. Seats and SSO for teams."
+    />
+    <link rel="icon" href="assets/img/icon.png" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="bar">
+      <a class="brand" href="index.html">
+        <img src="assets/img/mark.svg" alt="" width="22" height="22" />
+        <span>Ada</span>
+      </a>
+      <nav>
+        <a href="index.html#product">Product</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="index.html#numbers">Benchmark</a>
+        <a class="cta-sm" href="index.html#download">Download</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero narrow">
+        <p class="eyebrow"><span class="mk">&gt;&#8201;&lt;</span> pricing</p>
+        <h1>Free with your own key. Always.</h1>
+        <p class="lede">
+          Ada is a desktop app, not a service you rent access to. Point it at
+          your own API key and it costs nothing, forever. Pay us only when you'd
+          rather not manage keys, or when a team needs seats and SSO.
+        </p>
+      </section>
+
+      <section class="band">
+        <div class="tiers">
+          <article class="tier">
+            <h2>Free</h2>
+            <p class="price"><b>$0</b></p>
+            <p class="tag">Bring your own key</p>
+            <ul class="ticks">
+              <li>
+                The full editor &mdash; agent, worktrees, terminal, search
+              </li>
+              <li>All <b>340+ models</b> via your own OpenRouter key</li>
+              <li>All <b>291 skills</b> and <b>22 agent tools</b></li>
+              <li>Local repo map and on-device semantic index</li>
+              <li>Free models work signed out, no key at all</li>
+            </ul>
+            <a class="ghost block" href="index.html#download">Download Ada</a>
+            <p class="under">
+              You pay your model provider directly. We never see the traffic.
+            </p>
+          </article>
+
+          <article class="tier mark">
+            <p class="ribbon">Most people want this</p>
+            <h2>Pro</h2>
+            <p class="price"><b>$19</b><span>/month</span></p>
+            <p class="tag">Hosted &mdash; no key to manage</p>
+            <ul class="ticks">
+              <li>Everything in Free</li>
+              <li>
+                <b>Model routing included</b> &mdash; sign in and start, no key
+              </li>
+              <li>One account across every machine you use</li>
+              <li>Image generation and document tools on the hosted backend</li>
+              <li>Attach your own key any time and keep going</li>
+            </ul>
+            <a class="cta block" href="contact.html">Request access</a>
+            <p class="under">
+              Fair use. Heavy sustained usage is cheaper on your own key &mdash;
+              we'll say so.
+            </p>
+          </article>
+
+          <article class="tier">
+            <h2>Team</h2>
+            <p class="price"><b>$39</b><span>/user, month</span></p>
+            <p class="tag">Seats, SSO, policy</p>
+            <ul class="ticks">
+              <li>Everything in Pro</li>
+              <li><b>Seat keys</b> &mdash; issue and revoke per person</li>
+              <li>
+                <b>SSO via OIDC</b> &mdash; your identity provider is the
+                authority
+              </li>
+              <li>Org policy &mdash; which models and tools are permitted</li>
+              <li>Self-host the backend on your own infrastructure</li>
+            </ul>
+            <a class="ghost block" href="contact.html">Talk to us</a>
+            <p class="under">
+              Annual invoicing available. Self-hosted stays on your network.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="band">
+        <p class="eyebrow">
+          <span class="mk">&gt;&#8201;&lt;</span> what you actually pay
+        </p>
+        <h2>Two bills, and we only shrink one of them.</h2>
+        <p class="say">
+          Any AI coding tool costs you two things: the tool, and the model
+          tokens it spends on your behalf. The second is almost always the
+          larger number &mdash; and it's the one Ada was built to reduce.
+        </p>
+        <div class="cards">
+          <article>
+            <h3>The tool</h3>
+            <p>
+              $0 on your own key. $19 if you'd rather we handled routing. That
+              number is small and predictable either way.
+            </p>
+          </article>
+          <article>
+            <h3>The tokens</h3>
+            <p>
+              This is where the money goes. Across five measured tasks Ada sent
+              <b>444k tokens against 893k</b> for the same work &mdash;
+              <b>35&ndash;70% less spend</b>, depending on how much the task
+              leans on your existing code.
+            </p>
+          </article>
+          <article>
+            <h3>Which is why Free is real</h3>
+            <p>
+              We're not giving away a crippled tier to upsell you. On your own
+              key you get the whole product, and the savings land in your
+              provider bill instead of ours.
+            </p>
+          </article>
+        </div>
+        <p class="say" style="margin-top: 30px">
+          <a class="ghost" href="index.html#numbers"
+            >See the per-task measurements &rarr;</a
+          >
+        </p>
+      </section>
+
+      <section class="band">
+        <p class="eyebrow"><span class="mk">&gt;&#8201;&lt;</span> questions</p>
+        <h2>Straight answers.</h2>
+        <dl class="faq">
+          <div>
+            <dt>Is Free actually free, or a trial?</dt>
+            <dd>
+              Actually free, with no time limit. Ada runs on your machine; with
+              your own key there's nothing for us to meter. The repo map and
+              semantic index run locally, so they cost nothing to operate
+              either.
+            </dd>
+          </div>
+          <div>
+            <dt>Does my code leave my machine?</dt>
+            <dd>
+              Only what a turn sends to the model you chose &mdash; the same as
+              any AI coding tool. Indexing is different: the embedding model
+              runs on your machine, so your codebase is never uploaded to be
+              indexed.
+            </dd>
+          </div>
+          <div>
+            <dt>What happens if I stop paying for Pro?</dt>
+            <dd>
+              The app keeps working. You drop to Free and add your own key.
+              Nothing you built is locked up, because nothing you built lives
+              with us.
+            </dd>
+          </div>
+          <div>
+            <dt>Can we run the backend ourselves?</dt>
+            <dd>
+              Yes &mdash; that's the Team tier's normal deployment. The backend
+              is a container you run on your own infrastructure, with seats and
+              OIDC pointing at your identity provider.
+            </dd>
+          </div>
+          <div>
+            <dt>Ada is in beta. What does that mean for the price?</dt>
+            <dd>
+              It ships, it's signed and notarized, and it updates itself. It's
+              early, so access is still granted one account at a time &mdash;
+              <a href="contact.html">ask and we'll add you</a>.
+            </dd>
+          </div>
+        </dl>
+      </section>
+    </main>
+
+    <footer>
+      <div class="foot">
+        <span
+          ><img src="assets/img/mark.svg" alt="" width="16" height="16" /> Ada
+          &mdash; v0.1.23</span
+        >
+        <nav>
+          <a href="pricing.html">Pricing</a>
+          <a href="contact.html">Contact</a>
+          <a href="https://github.com/black141312/ada-releases">Releases</a>
+          <a href="report.html">Benchmark report</a>
+        </nav>
+      </div>
+      <p class="fine">
+        Prices in USD. Figures on this page come from the benchmark runs
+        recorded in the report.
+      </p>
+    </footer>
+  </body>
+</html>
