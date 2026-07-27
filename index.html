@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ada — an agent-first code editor</title>
+    <meta
+      name="description"
+      content="A desktop code editor built around an agent that sends only what a turn needs. Measured against Claude Code: half the context, 35–70% less cost."
+    />
+    <link rel="icon" href="assets/img/icon.png" />
+    <link rel="stylesheet" href="style.css" />
+    <meta property="og:title" content="Ada — an agent-first code editor" />
+    <meta
+      property="og:description"
+      content="The expensive part of AI coding isn't the model. It's how much you send it."
+    />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <header class="bar">
+      <a class="brand" href="#top">
+        <img src="assets/img/mark.svg" alt="" width="22" height="22" />
+        <span>Ada</span>
+      </a>
+      <nav>
+        <a href="#proof">Cost</a>
+        <a href="#product">Product</a>
+        <a href="#numbers">Benchmark</a>
+        <a class="cta-sm" href="#download">Download</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <!-- ── hero ───────────────────────────────────────────────────────── -->
+      <section class="hero">
+        <p class="eyebrow"><span class="mk">&gt;&#8201;&lt;</span> v0.1.23 &middot; Windows, macOS, Linux</p>
+        <h1>
+          The expensive part of AI coding isn't the model.
+          It's <em>how much you send it</em>.
+        </h1>
+        <p class="lede">
+          Ada is a desktop editor built around a coding agent that maps your repository once, sends
+          only what a turn actually needs, and routes to any of 340+ models. Every change lands in
+          its own git worktree until you merge it.
+        </p>
+        <div class="actions">
+          <a class="cta" href="#download">Download Ada</a>
+          <a class="ghost" href="#numbers">See the measurements</a>
+        </div>
+      </section>
+
+      <!-- ── the instrument: what a request carries ──────────────────────── -->
+      <section id="proof" class="band">
+        <p class="eyebrow"><span class="mk">&gt;&#8201;&lt;</span> 01 / what one request carries</p>
+        <h2>Same question. Same model. Same repository.</h2>
+        <p class="say">
+          Both agents were asked to summarise the same project, on the same machine, from matched
+          git checkouts. This is what each one put on the wire.
+        </p>
+
+        <div class="meter" id="meter">
+          <div class="lane other">
+            <div class="lane-head">
+              <span class="who">Claude Code</span>
+              <span class="tot"><b class="n" data-n="95941">0</b> tokens in &middot; $0.5291</span>
+            </div>
+            <div class="track">
+              <span class="seg a" style="--w: 77%"
+                ><i>standing prompt &asymp;77k &mdash; sent before it reads a single file</i></span
+              >
+              <span class="seg b" style="--w: 4%"></span>
+              <span class="seg c" style="--w: 15%"></span>
+            </div>
+          </div>
+
+          <div class="lane ada">
+            <div class="lane-head">
+              <span class="who">Ada</span>
+              <span class="tot"><b class="n" data-n="31856">0</b> tokens in &middot; $0.2046</span>
+            </div>
+            <div class="track">
+              <span class="seg d" style="--w: 30%"><i>repo map + the context it chose</i></span>
+              <span class="seg e" style="--w: 2%"></span>
+              <span class="seg c" style="--w: 1%"></span>
+            </div>
+          </div>
+
+          <ul class="key">
+            <li><span style="--c: var(--other)"></span>standing prompt</li>
+            <li><span style="--c: var(--other-dim)"></span>tool schemas, 3,848</li>
+            <li><span style="--c: var(--ada)"></span>repo map &mdash; built locally, free</li>
+            <li><span style="--c: var(--ada-dim)"></span>tool schemas, 1,772</li>
+            <li><span style="--c: var(--grey)"></span>the question itself</li>
+          </ul>
+
+          <p class="verdict">
+            <b>3&times; less sent.</b> Ada's entire request is smaller than the part of the other
+            request that exists before any work has happened.
+          </p>
+        </div>
+      </section>
+
+      <!-- ── how ─────────────────────────────────────────────────────────── -->
+      <section class="band">
+        <p class="eyebrow"><span class="mk">&gt;&#8201;&lt;</span> 02 / how</p>
+        <h2>Four decisions, each one measurable.</h2>
+        <div class="cards">
+          <article>
+            <h3>Nothing stands by default</h3>
+            <p>
+              No permanent system prompt riding along on every turn. Ada assembles each request from
+              scratch, so a short question costs what a short question should &mdash;
+              <b>&ldquo;hi&rdquo; is about 272 tokens</b>, tools and repo map included, because
+              neither is sent.
+            </p>
+          </article>
+          <article>
+            <h3>Tool schemas are earned</h3>
+            <p>
+              Every tool you expose is re-sent on every request. An ordinary coding turn carries
+              <b>1,772 tokens</b> of schemas instead of 3,848 &mdash; decks, documents, images,
+              notebooks, the browser and the design corpus stay out until the conversation asks,
+              each behind its own trigger.
+            </p>
+          </article>
+          <article>
+            <h3>The map is built on your machine</h3>
+            <p>
+              Opening a project builds a compact map of files and symbols, and the semantic index
+              runs a <b>local embedding model</b> &mdash; no embedding API bill, ever, and your code
+              never leaves the machine to be indexed.
+            </p>
+          </article>
+          <article>
+            <h3>A tool beats a description</h3>
+            <p>
+              Asked for a presentation, Ada calls its deck writer and hands back a real
+              <code>.pptx</code>: <b>$0.28 against $1.25</b> for an agent hand-writing slide markup.
+              Same for lookups &mdash; the map answers without opening files.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ── product ─────────────────────────────────────────────────────── -->
+      <section id="product" class="band">
+        <p class="eyebrow"><span class="mk">&gt;&#8201;&lt;</span> 03 / the editor</p>
+        <h2>An editor you already know how to use.</h2>
+        <p class="say">
+          File tree, Monaco, fuzzy open, find-in-files, an integrated terminal. No learning curve.
+          What's different is the pane on the right.
+        </p>
+
+        <figure class="shot wide">
+          <img
+            src="assets/img/ada-agent-working.jpg"
+            alt="Ada answering a question about its own source in two steps, using 10k of a 500k context window"
+            loading="lazy"
+            width="1440"
+            height="900"
+          />
+          <figcaption>
+            A real run &mdash; the agent answers a question about its own source correctly in two
+            steps, on <b>10k of a 500k window</b>. Reasoning, step count and context usage are on
+            screen, not hidden.
+          </figcaption>
+        </figure>
+
+        <div class="shots">
+          <figure class="shot">
+            <img
+              src="assets/img/ada-attachments.jpg"
+              alt="Three files attached to the composer as green @name chips"
+              loading="lazy"
+              width="1440"
+              height="900"
+            />
+            <figcaption>
+              Attach files as context &mdash; drag from the tree, click a chip to open it.
+            </figcaption>
+          </figure>
+          <figure class="shot">
+            <img
+              src="assets/img/ada-search-files.jpg"
+              alt="The command palette ranking filenames by fuzzy match"
+              loading="lazy"
+              width="1440"
+              height="900"
+            />
+            <figcaption>
+              <code>Ctrl+P</code> for files, <code>Ctrl+Shift+F</code> for text across the project.
+            </figcaption>
+          </figure>
+          <figure class="shot">
+            <img
+              src="assets/img/ada-term-chatbtn.jpg"
+              alt="The integrated terminal open beneath the agent pane"
+              loading="lazy"
+              width="1440"
+              height="900"
+            />
+            <figcaption>
+              A terminal inside the editor, already in your project folder.
+            </figcaption>
+          </figure>
+          <figure class="shot">
+            <img
+              src="assets/img/ada-welcome.jpg"
+              alt="Ada's welcome screen with open project, new window, just chat, and recent projects"
+              loading="lazy"
+              width="1440"
+              height="900"
+            />
+            <figcaption>Open a folder &mdash; or just chat, no folder required.</figcaption>
+          </figure>
+        </div>
+
+        <dl class="spec">
+          <div><dt>340+</dt><dd>models across 12 providers, switched mid&#8209;conversation</dd></div>
+          <div><dt>291</dt><dd>skills bundled and active, no setup</dd></div>
+          <div><dt>22</dt><dd>agent tools &mdash; git, browser, notebooks, decks, subagents</dd></div>
+          <div><dt>0</dt><dd>API keys needed to start &mdash; free models work signed out</dd></div>
+        </dl>
+      </section>
+
+      <!-- ── benchmark ───────────────────────────────────────────────────── -->
+      <section id="numbers" class="band">
+        <p class="eyebrow"><span class="mk">&gt;&#8201;&lt;</span> 04 / the benchmark</p>
+        <h2>Five tasks, one repository, published in full.</h2>
+        <p class="say">
+          Ada against Claude Code &mdash; same machine, same model (Opus&nbsp;4.7), same prompts,
+          matched git worktrees at the same commit. Every run, including the one Ada lost.
+        </p>
+
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Task</th>
+                <th class="r">Ada in</th>
+                <th class="r">Ada cost</th>
+                <th class="r">Other in</th>
+                <th class="r">Other cost</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Summarise the project</td>
+                <td class="r">31,856</td>
+                <td class="r win">$0.2046</td>
+                <td class="r">95,941</td>
+                <td class="r">$0.5291</td>
+              </tr>
+              <tr>
+                <td>Create a pricing API</td>
+                <td class="r">206,954</td>
+                <td class="r win">$1.2340</td>
+                <td class="r">424,706</td>
+                <td class="r">$1.5339</td>
+              </tr>
+              <tr>
+                <td>Tetris game</td>
+                <td class="r">109,041</td>
+                <td class="r lose">$0.7634</td>
+                <td class="r">95,708</td>
+                <td class="r">$0.6885</td>
+              </tr>
+              <tr>
+                <td>Portfolio website</td>
+                <td class="r">57,075</td>
+                <td class="r win">$0.5674</td>
+                <td class="r">128,389</td>
+                <td class="r">$0.6738</td>
+              </tr>
+              <tr>
+                <td>Project presentation</td>
+                <td class="r">38,726</td>
+                <td class="r win">$0.2807</td>
+                <td class="r">148,150</td>
+                <td class="r">$1.2517</td>
+              </tr>
+              <tr class="sum">
+                <td>Total</td>
+                <td class="r">443,652</td>
+                <td class="r">$3.0501</td>
+                <td class="r">892,894</td>
+                <td class="r">$4.6770</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="say">
+          <b>Tetris is the honest exception.</b> A greenfield game needs nothing from the
+          repository, so a map of the repository buys nothing &mdash; and Ada came within eight
+          cents anyway. That's the shape of the result: the more code you already have, the more it
+          saves. Tasks anchored in an existing codebase ran <b>16&ndash;78% cheaper</b>.
+        </p>
+
+        <a class="ghost" href="report.html">Read the full report &mdash; screenshots, method, limits &rarr;</a>
+      </section>
+
+      <!-- ── download ────────────────────────────────────────────────────── -->
+      <section id="download" class="band">
+        <p class="eyebrow"><span class="mk">&gt;&#8201;&lt;</span> 05 / download</p>
+        <h2>Free while it's in beta.</h2>
+        <p class="say">
+          Install and chat immediately with the free models &mdash; no account. Sign in with GitHub
+          to unlock the full catalogue.
+        </p>
+
+        <div class="grabs">
+          <a
+            class="grab"
+            href="https://github.com/black141312/ada-releases/releases/download/v0.1.23/Ada-Setup-0.1.23.exe"
+          >
+            <span class="os">Windows</span>
+            <span class="file">Ada-Setup-0.1.23.exe</span>
+          </a>
+          <a
+            class="grab"
+            href="https://github.com/black141312/ada-releases/releases/download/v0.1.23/Ada-0.1.23-arm64.dmg"
+          >
+            <span class="os">macOS &middot; Apple Silicon</span>
+            <span class="file">Ada-0.1.23-arm64.dmg</span>
+          </a>
+          <a
+            class="grab"
+            href="https://github.com/black141312/ada-releases/releases/download/v0.1.23/Ada-0.1.23.dmg"
+          >
+            <span class="os">macOS &middot; Intel</span>
+            <span class="file">Ada-0.1.23.dmg</span>
+          </a>
+          <a
+            class="grab"
+            href="https://github.com/black141312/ada-releases/releases/download/v0.1.23/Ada-0.1.23.AppImage"
+          >
+            <span class="os">Linux</span>
+            <span class="file">Ada-0.1.23.AppImage</span>
+          </a>
+        </div>
+        <p class="fine">
+          macOS builds are signed and notarized by Apple. On Windows, if SmartScreen appears, choose
+          <b>More info &rarr; Run anyway</b>. Ada updates itself from then on.
+          <a href="https://github.com/black141312/ada-releases/releases">All versions</a>.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <div class="foot">
+        <span><img src="assets/img/mark.svg" alt="" width="16" height="16" /> Ada &mdash; v0.1.23</span>
+        <nav>
+          <a href="https://github.com/black141312/ada-releases">Releases</a>
+          <a href="https://github.com/black141312/ada-releases/issues">Issues</a>
+          <a href="report.html">Benchmark report</a>
+        </nav>
+      </div>
+      <p class="fine">
+        Figures are from each tool's own reported usage, cross-checked against provider billing.
+        Single runs except the summarise task (average of three).
+      </p>
+    </footer>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
