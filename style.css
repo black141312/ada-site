@@ -870,3 +870,9 @@ footer {
 .ghost.block:hover {
   border-color: var(--ada);
 }
+
+/* a word instead of a figure — 42px is sized for "$39", not for "Custom" */
+.price.word b {
+  font-size: 30px;
+  letter-spacing: -0.01em;
+}
