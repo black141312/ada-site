@@ -1,2 +1,5 @@
 .DS_Store
 Thumbs.db
+
+# wrangler's local build/state cache
+.wrangler/

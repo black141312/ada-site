@@ -1,0 +1,10 @@
+name = "ada-site"
+compatibility_date = "2026-07-29"
+
+# Static site — no bundler, no build step.
+# Served from public/, NOT the repo root: pointing at "." made wrangler read 170 files against the
+# 23 that make up the site, i.e. it was picking up .git. That would publish the repo's history at
+# /.git/ on a public URL. A dedicated directory makes that structurally impossible rather than
+# dependent on ignore rules.
+[assets]
+directory = "public"
