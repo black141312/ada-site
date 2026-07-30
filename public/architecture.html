@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ada — Architecture</title>
+    <meta
+      name="description"
+      content="How Ada works: an editor around a provider-agnostic coding agent. The request path, the orchestrators, and the temporal knowledge graph that keeps every turn grounded."
+    />
+    <link rel="icon" href="assets/img/icon.png" />
+    <link rel="stylesheet" href="style.css" />
+    <script>
+      try {
+        var t = localStorage.getItem('ada-theme');
+        if (t) document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
+    <meta property="og:title" content="Ada — Architecture" />
+    <meta property="og:description" content="What runs when you send a message — client, routing backend, providers, and the knowledge layer." />
+    <meta property="og:type" content="website" />
+    <style>
+      /* Page-scoped diagram furniture — built on the site tokens (green = Ada, one accent). */
+      .a-flow { display: flex; align-items: stretch; }
+      .a-node { flex: 1 1 0; min-width: 0; border: 1px solid var(--line); background: var(--panel); border-radius: 10px; padding: 16px; }
+      .a-node.on { border-color: var(--ada-dim); }
+      .a-node .k { font: 500 11px var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); margin: 0 0 8px; }
+      .a-node.on .k { color: var(--ada); }
+      .a-node h3 { font: 600 14px var(--mono); margin: 0 0 5px; }
+      .a-node p { margin: 0; font-size: 13.5px; color: var(--ink-2); line-height: 1.55; }
+      .a-arrow { flex: 0 0 auto; display: flex; align-items: center; padding: 0 10px; color: var(--dim); font-family: var(--mono); }
+      @media (max-width: 720px) {
+        .a-flow { flex-direction: column; }
+        .a-arrow { padding: 8px 0; }
+        .a-arrow span { transform: rotate(90deg); display: inline-block; }
+      }
+      .a-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+      .a-chip { font: 400 11.5px var(--mono); padding: 3px 8px; border: 1px solid var(--line); border-radius: 6px; color: var(--dim); background: var(--panel-2); white-space: nowrap; }
+      .a-chip.k { color: var(--ada); border-color: var(--ada-dim); }
+      .a-note { font: 400 12px var(--mono); color: var(--dim); margin: 14px 0 0; }
+
+      .a-strats { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 6px; }
+      .a-strat { border: 1px solid var(--line); border-radius: 10px; padding: 14px; background: var(--panel); }
+      .a-strat.def { border-color: var(--ada-dim); }
+      .a-strat .n { font: 600 14px var(--mono); display: flex; align-items: center; gap: 8px; }
+      .a-strat .t { font: 400 11px var(--mono); color: var(--dim); margin: 4px 0 9px; }
+      .a-strat p { margin: 0; font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+      .a-flag { font: 500 9.5px var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--void); background: var(--ada); border-radius: 4px; padding: 1px 6px; }
+
+      .a-code { font: 400 12.5px/1.7 var(--mono); background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; overflow-x: auto; white-space: pre; margin: 0; color: var(--ink); }
+      .a-code .kw { color: var(--ada); } .a-code .cm { color: var(--dim); } .a-code .fn { color: var(--ink-2); }
+
+      .a-pipe { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+      .a-stage { font: 400 12.5px var(--mono); border: 1px solid var(--ada-dim); border-radius: 8px; padding: 7px 12px; color: var(--ink); }
+      .a-pipe .s { color: var(--dim); font-family: var(--mono); }
+
+      .a-flows { display: grid; gap: 10px; margin-top: 6px; }
+      .a-fline { font: 400 12.5px var(--mono); background: var(--panel-2); border: 1px solid var(--line); border-radius: 9px; padding: 12px 14px; overflow-x: auto; color: var(--dim); }
+      .a-fline b { color: var(--ada); font-weight: 500; }
+      .a-fline .m { color: var(--dim); }
+      .a-dir { font: 700 9.5px var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--void); background: var(--ada); border-radius: 4px; padding: 2px 7px; margin-right: 9px; }
+
+      .a-tree { font: 400 13px/1.75 var(--mono); background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; overflow-x: auto; color: var(--ink-2); margin: 0; }
+      .a-tree .d { color: var(--ada); } .a-tree .c { color: var(--dim); }
+
+      .a-cut { border: 1px solid var(--line); border-left: 3px solid var(--other); border-radius: 10px; background: var(--panel); padding: 16px 18px; margin-top: 16px; }
+      .a-cut .l { font: 500 11px var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--other); margin: 0 0 6px; }
+      .a-cut p { margin: 0; font-size: 14px; color: var(--ink-2); line-height: 1.55; }
+      .a-sub { max-width: 62ch; color: var(--ink-2); margin: 24px 0 12px; }
+    </style>
+  </head>
+  <body>
+    <header class="bar">
+      <a class="brand" href="index.html">
+        <img src="assets/img/mark.svg" alt="" width="22" height="22" />
+        <span>Ada</span>
+      </a>
+      <nav>
+        <a href="index.html#product">Product</a>
+        <a href="index.html#numbers">Benchmark</a>
+        <a href="pricing.html">Pricing</a>
+        <button id="theme" class="tgl" type="button" title="Switch theme" aria-label="Switch theme">
+          <svg class="sun" width="14" height="14" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="9" cy="9" r="3.4" />
+            <path d="M9 1.5v2M9 14.5v2M1.5 9h2M14.5 9h2M3.7 3.7l1.4 1.4M12.9 12.9l1.4 1.4M14.3 3.7l-1.4 1.4M5.1 12.9l-1.4 1.4" stroke-linecap="round" />
+          </svg>
+          <svg class="moon" width="14" height="14" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M15 10.8A6.5 6.5 0 0 1 7.2 3a6.5 6.5 0 1 0 7.8 7.8z" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <a class="cta-sm" href="index.html#download">Download</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <!-- ── hero ─────────────────────────────────────────────── -->
+      <section class="hero narrow">
+        <p class="eyebrow"><span class="mk">&gt;&#8201;&lt;</span> architecture</p>
+        <h1>What runs when you send a message.</h1>
+        <p class="lede">
+          Ada's editor is a thin shell around a provider-agnostic coding agent. This is the whole path
+          a request takes &mdash; from the pane on the right to a model and back &mdash; the loop that
+          drives it, and the knowledge layer that keeps every turn grounded in your repository.
+        </p>
+      </section>
+
+      <!-- ── 01 request path ──────────────────────────────────── -->
+      <section class="band">
+        <p class="eyebrow"><span class="mk">&gt;&#8201;&lt;</span> 01 / the request path</p>
+        <h2>One wire format, every provider.</h2>
+        <p class="say">
+          Two processes on your machine. The client speaks one dialect &mdash; OpenAI chat
+          completions &mdash; no matter the target model. A local backend holds the real keys, applies
+          policy, routes to whichever provider the model id names, and meters every call.
+        </p>
+
+        <div class="a-flow">
+          <div class="a-node on">
+            <p class="k">Client</p>
+            <h3>the agent loop</h3>
+            <p>The pane on the right. Assembles each request from scratch and streams the reply.</p>
+          </div>
+          <div class="a-arrow"><span>&rarr;</span></div>
+          <div class="a-node on">
+            <p class="k">Backend &middot; local</p>
+            <h3>routing server</h3>
+            <p>Auth &rarr; policy &rarr; route &rarr; adapter &rarr; meter. Auto-started; holds the keys.</p>
+          </div>
+          <div class="a-arrow"><span>&rarr;</span></div>
+          <div class="a-node">
+            <p class="k">Upstream</p>
+            <h3>model APIs</h3>
+            <div class="a-chips">
+              <span class="a-chip k">claude-*</span><span class="a-chip">gpt-*</span><span class="a-chip">gemini-*</span>
+              <span class="a-chip">@cf/*</span><span class="a-chip">groq/</span><span class="a-chip">ollama</span>
+            </div>
+          </div>
+        </div>
+        <p class="a-note">The client never holds a provider key &mdash; only a client key for the local backend. 340+ models across 12 providers, switched mid&#8209;conversation.</p>
+      </section>
+
+      <!-- ── 02 orchestrators ─────────────────────────────────── -->
+      <section class="band">
+        <p class="eyebrow"><span class="mk">&gt;&#8201;&lt;</span> 02 / orchestrators</p>
+        <h2>The loop is a strategy, not a script.</h2>
+        <p class="say">
+          An <b>Engine</b> holds the harness primitives &mdash; streaming, tool-call recovery,
+          compaction, approval, sessions. An <b>Orchestrator</b> only decides <em>when</em> to call
+          them. So a new agent architecture is one Orchestrator and zero engine changes.
+        </p>
+
+        <div class="a-strats">
+          <div class="a-strat def">
+            <div class="n">react <span class="a-flag">default</span></div>
+            <div class="t">reason &rarr; act &rarr; observe &rarr; repeat</div>
+            <p>The tool loop. Steerable mid-turn; nudges once if a model stops with tool output but no answer.</p>
+          </div>
+          <div class="a-strat">
+            <div class="n">single</div>
+            <div class="t">one turn &middot; no tools</div>
+            <p>A single model turn with tools disabled. Quick question, quick answer.</p>
+          </div>
+          <div class="a-strat">
+            <div class="n">plan</div>
+            <div class="t">read-only plan &rarr; execute</div>
+            <p>One locked turn presents a numbered plan, then drops into the tool loop to carry it out.</p>
+          </div>
+          <div class="a-strat">
+            <div class="n">toolsmith</div>
+            <div class="t">docs &rarr; fan out &rarr; skills</div>
+            <p>Reads a connected integration's docs, then spawns a sub-agent per capability to author skills for it.</p>
+          </div>
+        </div>
+
+        <p class="a-sub">The heart &mdash; the <span style="font-family: var(--mono)">react</span> loop, condensed:</p>
+        <pre class="a-code"><span class="kw">for</span> (;;) {
+  <span class="kw">const</span> turn = <span class="kw">await</span> e.<span class="fn">step</span>();
+  <span class="kw">if</span> (!turn) <span class="kw">return</span>;                          <span class="cm">// aborted</span>
+  <span class="kw">if</span> (!turn.toolCalls.length) {
+    <span class="kw">if</span> (!turn.content.trim() && !nudged)      <span class="cm">// stopped silent &rarr; ask for the answer, once</span>
+      { nudged = <span class="kw">true</span>; e.<span class="fn">addUser</span>(<span class="cm">"&hellip;write your final response now&hellip;"</span>); <span class="kw">continue</span>; }
+    <span class="kw">if</span> (e.<span class="fn">drainSteer</span>()) <span class="kw">continue</span>; <span class="kw">return</span>;     <span class="cm">// done &mdash; unless steering queued more</span>
+  }
+  <span class="kw">await</span> e.<span class="fn">runTools</span>(turn.toolCalls);
+  e.<span class="fn">drainSteer</span>();
+}</pre>
+
+        <p class="a-sub">Delegation &mdash; the only fan-out primitive, with guardrails learned the hard way:</p>
+        <div class="cards">
+          <article>
+            <h3>Isolated by default</h3>
+            <p>A sub-agent runs in its own git worktree as a child process &mdash; parallel in-process workers would all write into the parent's tree. Falls back in-process when there's no repo.</p>
+          </article>
+          <article>
+            <h3>A worker leash</h3>
+            <p>50k-token budget per worker. One that missed its brief will read the repo until something stops it (measured: 174k on a single subtask). Parents are never capped.</p>
+          </article>
+          <article>
+            <h3>Path claiming</h3>
+            <p>Output files are claimed atomically &mdash; two workers can't both win the same file. A collision is reported as a decomposition bug, never silently merged.</p>
+          </article>
+          <article>
+            <h3>Cost rolls up</h3>
+            <p>A sub-agent's tokens and cost fold into the parent even if the subtask throws &mdash; a swarm's true spend stays on screen.</p>
+          </article>
+        </div>
+
+        <div class="a-cut">
+          <p class="l">Removed &mdash; the lesson</p>
+          <p>A fifth strategy, <b>multi</b> (decompose &rarr; fan out &rarr; synthesize), was deleted. On the same task it burned <b>29&times; the input tokens</b>, and only looked cheaper when workers ran on a throwaway model; on the user's model it cost <b>2&times; react for worse output</b> &mdash; splitting one cohesive artifact along file lines leaves nobody holding the whole design. Delegation survives only for genuinely separable subtasks.</p>
+        </div>
+      </section>
+
+      <!-- ── 03 knowledge layer ───────────────────────────────── -->
+      <section class="band">
+        <p class="eyebrow"><span class="mk">&gt;&#8201;&lt;</span> 03 / the knowledge layer</p>
+        <h2>Four ways a session stays grounded.</h2>
+        <p class="say">
+          Structure, facts, meaning, and relationships-over-time. Each persists beside your code and
+          is injected into the model's context &mdash; only what a turn actually needs.
+        </p>
+
+        <div class="cards">
+          <article>
+            <h3>brain</h3>
+            <p><b>Structure.</b> A cached repo map &mdash; files and top-level symbols &mdash; so the agent starts oriented instead of grepping. Built locally, free.</p>
+          </article>
+          <article>
+            <h3>memory</h3>
+            <p><b>Facts.</b> Durable notes across sessions, with supersede, secret-gating, scope, and relevance recall.</p>
+          </article>
+          <article>
+            <h3>embed-index</h3>
+            <p><b>Meaning.</b> Semantic code search over a local embedding index &mdash; cosine over a packed vector blob, no embedding API bill.</p>
+          </article>
+          <article>
+            <h3>graph</h3>
+            <p><b>Relationships over time.</b> Typed, bi-temporal edges &mdash; a contradicting fact invalidates the old one, so point-in-time questions still answer.</p>
+          </article>
+        </div>
+
+        <p class="a-sub">The graph closes the loop with memory at three points &mdash; all installed by one <span style="font-family: var(--mono)">wireGraphMemory()</span> at startup:</p>
+        <div class="a-flows">
+          <div class="a-fline"><span class="a-dir">write</span>a remembered fact &nbsp;&rarr;&nbsp; <b>extractEdge</b> <span class="m">(subject &middot; predicate &middot; object, or null)</span> &nbsp;&rarr;&nbsp; <b>addEdge</b> <span class="m">&rarr; graph.db, invalidating any contradicted fact</span></div>
+          <div class="a-fline"><span class="a-dir">read</span>each turn's recall &nbsp;&rarr;&nbsp; <b>search</b> <span class="m">names the entities the query mentions</span> &nbsp;&rarr;&nbsp; <b>neighbors</b> <span class="m">pull their relationships</span> &nbsp;&rarr;&nbsp; related facts into context</div>
+          <div class="a-fline"><span class="a-dir">tool</span><b>graph_query</b> <span class="m">&mdash; the model asks on demand: an entity's connections, or a free-text search over facts</span></div>
+        </div>
+        <p class="a-note">Write and read are hooks that default off, so memory stays pure and offline-testable; the tool is read-only. Extraction self-gates to null rather than store a garbage triple; recall is trust-gated and honours point-in-time.</p>
+      </section>
+
+      <!-- ── 04 backend ───────────────────────────────────────── -->
+      <section class="band">
+        <p class="eyebrow"><span class="mk">&gt;&#8201;&lt;</span> 04 / the routing backend</p>
+        <h2>Every request passes one pipeline.</h2>
+        <p class="say">
+          A small local server. Before any request reaches an upstream provider, it runs the same
+          sequence &mdash; so keys, policy, and metering live in one place, not in the client.
+        </p>
+
+        <div class="a-pipe">
+          <span class="a-stage">auth</span><span class="s">&rarr;</span>
+          <span class="a-stage">allow-list</span><span class="s">&rarr;</span>
+          <span class="a-stage">org policy</span><span class="s">&rarr;</span>
+          <span class="a-stage">route(model)</span><span class="s">&rarr;</span>
+          <span class="a-stage">provider adapter</span><span class="s">&rarr;</span>
+          <span class="a-stage">meter + audit</span>
+        </div>
+
+        <div class="cards" style="margin-top: 22px;">
+          <article>
+            <h3>Routing</h3>
+            <p>Model id &rarr; provider by prefix; slash-namespaced ids fall back to an aggregator. Add a provider without touching the client.</p>
+          </article>
+          <article>
+            <h3>Keys stay server-side</h3>
+            <p>Provider keys never reach the editor. The client authenticates to the backend with a single client key.</p>
+          </article>
+          <article>
+            <h3>Also serves</h3>
+            <p>Embeddings, image generation, the model catalogue, and provider status &mdash; the same authenticated surface.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ── 05 on disk ───────────────────────────────────────── -->
+      <section class="band">
+        <p class="eyebrow"><span class="mk">&gt;&#8201;&lt;</span> 05 / on disk</p>
+        <h2>Everything the agent knows sits beside your code.</h2>
+        <p class="say">
+          Per project, plain files &mdash; inspectable, deletable, and local. Nothing about your
+          repository is indexed off the machine.
+        </p>
+        <pre class="a-tree"><span class="d">.ada/</span>
+  brain.json      <span class="c"># repo map cache</span>
+  index.json      <span class="c"># semantic index &mdash; manifest</span>
+  index.vec       <span class="c"># semantic index &mdash; packed vectors</span>
+  graph.db        <span class="c"># temporal knowledge graph</span>
+  <span class="d">skills/</span>         <span class="c"># project + integration-authored skills</span>
+  mcp.json        <span class="c"># configured integrations</span>
+<span class="d">memory/</span>           <span class="c"># durable facts (project + user)</span></pre>
+
+        <p style="margin-top: 34px;">
+          <a class="ghost" href="index.html#numbers">See what this costs on the wire &mdash; the benchmark &rarr;</a>
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <div class="foot">
+        <span><img src="assets/img/mark.svg" alt="" width="16" height="16" /> Ada &mdash; architecture</span>
+        <nav>
+          <a href="index.html">Home</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="report.html">Benchmark report</a>
+          <a href="https://github.com/black141312/ada-releases">Releases</a>
+        </nav>
+      </div>
+      <p class="fine">
+        A map of the agent inside Ada &mdash; the request path, the loop, and the knowledge layer.
+        Details evolve; the shape holds.
+      </p>
+    </footer>
+
+    <script src="theme.js" defer></script>
+  </body>
+</html>
