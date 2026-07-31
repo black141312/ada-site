@@ -1,56 +1,65 @@
 /* Ada — marketing site.
    Design: the product's claim is measurable, so the page is built like an instrument
    readout rather than a landing page — hairline rules, mono labels, tabular figures.
-   Colour is functional: green is Ada's data, amber is the comparison arm. Fonts are
-   served from this repo (Ada ships offline-safe pages; its own site shouldn't beg a CDN). */
+   Palette is "Nocturne", the app's own: a blurple accent on a desaturated indigo ground.
+   The ground carries no hue; the accent does. Chart colour stays functional — the accent
+   is Ada's arm, amber is the comparison — because telling two series apart is what that
+   colour is FOR. Fonts are served from this repo (Ada ships offline-safe pages; its own
+   site shouldn't beg a CDN). */
 
 @font-face {
-  font-family: 'Plex Sans';
+  font-family: 'Inter';
   font-weight: 400;
   font-display: swap;
-  src: url('assets/fonts/ibm-plex-sans-latin-400-normal.woff2') format('woff2');
+  src: url('assets/fonts/inter-latin-400-normal.woff2') format('woff2');
 }
 @font-face {
-  font-family: 'Plex Sans';
-  font-weight: 600;
-  font-display: swap;
-  src: url('assets/fonts/ibm-plex-sans-latin-600-normal.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Plex Mono';
-  font-weight: 400;
-  font-display: swap;
-  src: url('assets/fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Plex Mono';
+  font-family: 'Inter';
   font-weight: 500;
   font-display: swap;
-  src: url('assets/fonts/ibm-plex-mono-latin-500-normal.woff2') format('woff2');
+  src: url('assets/fonts/inter-latin-500-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-weight: 600;
+  font-display: swap;
+  src: url('assets/fonts/inter-latin-600-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-weight: 400;
+  font-display: swap;
+  src: url('assets/fonts/jetbrains-mono-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-weight: 500;
+  font-display: swap;
+  src: url('assets/fonts/jetbrains-mono-latin-500-normal.woff2') format('woff2');
 }
 
 :root {
   color-scheme: dark;
-  --void: #07080a;
-  --panel: #0e1116;
-  --panel-2: #11151b;
-  --line: #1c2129;
-  --ink: #e9edf1;
-  --ink-2: #b9c2cc;
-  --dim: #79838f;
-  --ada: #3ecf72;
-  --ada-dim: #2a8a51;
-  --other: #d98f4a;
+  --void: #0e1019;
+  --panel: #161826;
+  --panel-2: #1a1c2b;
+  --line: #2a2d3f;
+  --ink: #e9e9ed;
+  --ink-2: #b2b6ca;
+  --dim: #75798c;
+  --ada: #9184d9;
+  --ada-dim: #5d5294;
+  --other: #d99a5c;
   --other-dim: #8a6a45;
-  --grey: #39414c;
-  --bar-bg: rgba(7, 8, 10, 0.86);
-  --fill-ada: #3ecf72;
-  --fill-ada-2: #2a8a51;
-  --fill-other: #d98f4a;
+  --grey: #3f424d;
+  --bar-bg: rgba(14, 16, 25, 0.86);
+  --fill-ada: #9184d9;
+  --fill-ada-2: #5d5294;
+  --fill-other: #d99a5c;
   --fill-other-2: #8a6a45;
-  --fill-grey: #39414c;
-  --sans: 'Plex Sans', system-ui, -apple-system, sans-serif;
-  --mono: 'Plex Mono', ui-monospace, Consolas, monospace;
+  --fill-grey: #3f424d;
+  --sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
   --pad: clamp(20px, 6vw, 96px);
   --max: 1120px;
 }
@@ -58,53 +67,53 @@
 /* Light theme: the visitor's OS preference decides, and the toggle overrides it. */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) {
-  color-scheme: light;
-  --void: #f7f7f6;
-  --panel: #ffffff;
-  --panel-2: #f0f1ef;
-  --line: #e3e4e1;
-  --ink: #16191e;
-  --ink-2: #444a53;
-  --dim: #6a727c;
-  --ada: #17914b;
-  --ada-dim: #63bd8c;
-  --other: #a8641a;
-  --other-dim: #d2ab7c;
-  --grey: #b9bfc7;
-  --bar-bg: rgba(247, 247, 246, 0.88);
+    color-scheme: light;
+    --void: #f8f9fe;
+    --panel: #fdfdff;
+    --panel-2: #f1f3fb;
+    --line: #e0e2ee;
+    --ink: #25272f;
+    --ink-2: #4a4d63;
+    --dim: #6f7386;
+    --ada: #6b5fb0;
+    --ada-dim: #a79eda;
+    --other: #a4661f;
+    --other-dim: #d2ab7c;
+    --grey: #b9bcc9;
+    --bar-bg: rgba(248, 249, 254, 0.9);
   }
 }
 :root[data-theme='light'] {
   color-scheme: light;
-  --void: #f7f7f6;
-  --panel: #ffffff;
-  --panel-2: #f0f1ef;
-  --line: #e3e4e1;
-  --ink: #16191e;
-  --ink-2: #444a53;
-  --dim: #6a727c;
-  --ada: #17914b;
-  --ada-dim: #63bd8c;
-  --other: #a8641a;
+  --void: #f8f9fe;
+  --panel: #fdfdff;
+  --panel-2: #f1f3fb;
+  --line: #e0e2ee;
+  --ink: #25272f;
+  --ink-2: #4a4d63;
+  --dim: #6f7386;
+  --ada: #6b5fb0;
+  --ada-dim: #a79eda;
+  --other: #a4661f;
   --other-dim: #d2ab7c;
-  --grey: #b9bfc7;
-  --bar-bg: rgba(247, 247, 246, 0.88);
+  --grey: #b9bcc9;
+  --bar-bg: rgba(248, 249, 254, 0.9);
 }
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --void: #07080a;
-  --panel: #0e1116;
-  --panel-2: #11151b;
-  --line: #1c2129;
-  --ink: #e9edf1;
-  --ink-2: #b9c2cc;
-  --dim: #79838f;
-  --ada: #3ecf72;
-  --ada-dim: #2a8a51;
-  --other: #d98f4a;
+  --void: #0e1019;
+  --panel: #161826;
+  --panel-2: #1a1c2b;
+  --line: #2a2d3f;
+  --ink: #e9e9ed;
+  --ink-2: #b2b6ca;
+  --dim: #75798c;
+  --ada: #9184d9;
+  --ada-dim: #5d5294;
+  --other: #d99a5c;
   --other-dim: #8a6a45;
-  --grey: #39414c;
-  --bar-bg: rgba(7, 8, 10, 0.86);
+  --grey: #3f424d;
+  --bar-bg: rgba(14, 16, 25, 0.86);
 }
 
 * {
