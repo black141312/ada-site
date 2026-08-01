@@ -42,18 +42,10 @@
       </section>
 
       <section class="band" id="panel" hidden>
-        <div class="cards">
-          <article class="card">
-            <h2 id="plan-name"></h2>
-            <p class="price"><span id="plan-limit"></span></p>
-            <ul>
-              <li id="plan-scope"></li>
-              <li>Billed monthly, cancel any time</li>
-            </ul>
-            <button id="pay" class="cta-sm" type="button" disabled>Continue to payment</button>
-            <p class="fine" id="note"></p>
-          </article>
-        </div>
+        <!-- Plan cards render from the backend's live catalog (GET /v1/billing/plans), managed in
+             the Kelviq dashboard — a price change there shows up here without a deploy. -->
+        <div class="cards" id="plans"></div>
+        <p class="fine" id="note"></p>
       </section>
 
       <section class="band" id="problem" hidden>
@@ -64,10 +56,13 @@
 
     <script src="theme.js"></script>
     <script>
-      // The backend that issued the session. Overridable so a staging site can point at a staging API.
-      const API = window.ADA_API || 'https://ada-server-1024230698481.asia-south1.run.app/v1';
+      // The backend that issued the session. Overridable so a staging site (or a local dev run,
+      // via ?api=) can point at a staging API.
+      const qs = new URLSearchParams(location.search);
+      const API = qs.get('api') || window.ADA_API || 'https://ada-server-1024230698481.asia-south1.run.app/v1';
       const $ = (id) => document.getElementById(id);
       const fmt = (n) => (n >= 1e6 ? (n / 1e6).toFixed(n >= 1e7 ? 0 : 1) + 'M' : Math.round(n / 1e3) + 'k');
+      const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
       function fail(msg) {
         $('sub').textContent = '';
@@ -76,13 +71,74 @@
         $('problem').hidden = false;
       }
 
+      async function getJson(path, init) {
+        const r = await fetch(`${API}${path}`, init);
+        const data = await r.json().catch(() => null);
+        return { r, data };
+      }
+
+      // After payment Kelviq sends the buyer back here with &paid=1. The plan is granted by the
+      // payment webhook, not by this page — so poll the session briefly until the grant lands.
+      async function confirmPaid(id) {
+        $('sub').textContent = 'Payment received — activating your plan…';
+        for (let i = 0; i < 20; i++) {
+          const { r, data } = await getJson(`/billing/checkout/${encodeURIComponent(id)}`).catch(() => ({}));
+          if (r && r.ok && data.status === 'paid') {
+            $('head').textContent = 'You’re upgraded';
+            $('sub').textContent = `Your account is on ${data.label}. Close this tab and head back to Ada — the new plan applies to your next request.`;
+            return;
+          }
+          await new Promise((res) => setTimeout(res, 2500));
+        }
+        $('sub').textContent = 'Payment received. Activation is taking a moment — your plan will be live shortly.';
+      }
+
+      function renderPlans(catalog, session, sessionId) {
+        const paid = catalog.plans.filter((p) => p.plan !== 'free');
+        $('plans').innerHTML = paid
+          .map((p) => {
+            const monthly = p.prices && p.prices.MONTHLY != null ? p.prices.MONTHLY : null;
+            const price = monthly != null ? `<b>${esc(catalog.symbol)}${esc(monthly)}</b><span>/month</span>` : '<b>Custom</b>';
+            const current = p.plan === session.plan ? ' — your selection' : '';
+            return `<article class="card">
+              <h2>${esc(p.label)}${current}</h2>
+              <p class="price">${price}</p>
+              <ul>
+                <li>${p.models === 'all' ? 'Every model in the catalogue' : 'Free models only'}</li>
+                <li>${fmt(p.monthlyTokens)} tokens / month</li>
+                <li>Cancel any time</li>
+              </ul>
+              <button class="cta-sm" type="button" data-plan="${esc(p.kelviqPlan || p.plan)}">Continue to payment</button>
+            </article>`;
+          })
+          .join('');
+        for (const btn of $('plans').querySelectorAll('button[data-plan]')) {
+          btn.onclick = async () => {
+            btn.disabled = true;
+            btn.textContent = 'Opening payment…';
+            const { r, data } = await getJson(`/billing/checkout/${encodeURIComponent(sessionId)}/purchase`, {
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: JSON.stringify({ plan: btn.dataset.plan }),
+            }).catch(() => ({}));
+            if (r && r.ok && data.url) {
+              location.href = data.url; // → the payment provider's hosted checkout
+            } else {
+              $('note').textContent = (data && data.error && data.error.message) || 'Could not start payment — try again.';
+              btn.disabled = false;
+              btn.textContent = 'Continue to payment';
+            }
+          };
+        }
+        $('panel').hidden = false;
+      }
+
       (async () => {
-        const id = new URLSearchParams(location.search).get('s');
+        const id = qs.get('s');
         if (!id) return fail('No upgrade session in this link. Start the upgrade from inside Ada.');
         let r, data;
         try {
-          r = await fetch(`${API}/billing/checkout/${encodeURIComponent(id)}`);
-          data = await r.json();
+          ({ r, data } = await getJson(`/billing/checkout/${encodeURIComponent(id)}`));
         } catch {
           return fail('Could not reach the Ada backend. Check your connection and try again.');
         }
@@ -93,17 +149,14 @@
           $('sub').textContent = `Your account is on ${data.label}. Close this tab and head back to Ada.`;
           return;
         }
+        if (qs.get('paid')) return confirmPaid(id);
 
-        $('sub').textContent = 'Review your plan, then continue to payment.';
-        $('plan-name').textContent = data.label;
-        $('plan-scope').textContent = data.models === 'all' ? 'Every model in the catalogue' : 'Free models only';
-        $('plan-limit').textContent = `${fmt(data.monthlyTokens)} tokens / month`;
-        $('panel').hidden = false;
-
-        // Payment isn't connected yet. The button stays disabled and says so, rather than opening a
-        // flow that dead-ends — the session and the plan grant behind it are already real, so this
-        // page becomes live the moment a provider is wired.
-        $('note').textContent = 'Payment isn’t connected yet — your plan activates automatically once it is.';
+        // Pending: show the live plan catalog and let the buyer choose.
+        const plansRes = await getJson('/billing/plans').catch(() => ({}));
+        if (!plansRes.r || !plansRes.r.ok) return fail('Could not load plans. Try again in a moment.');
+        $('sub').textContent = 'Pick a plan, then continue to payment.';
+        renderPlans(plansRes.data, data, id);
+        if (plansRes.data.source !== 'kelviq') $('note').textContent = 'Payment isn’t connected on this server yet — plans shown for reference.';
       })();
     </script>
   </body>
