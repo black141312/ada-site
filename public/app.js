@@ -81,6 +81,30 @@
     /* private mode, or someone put junk in localStorage — just refetch */
   }
 
+  // The download buttons are hardcoded to a version, which means they are wrong the moment the next
+  // release ships — they sat on v0.1.28 for seven releases. Since the count is already fetching
+  // every release, point them at the newest one while we are here. The HTML keeps a real, working
+  // link so the page is never broken with JS off; this only ever moves it forward.
+  const pointAtLatest = (releases) => {
+    const latest = releases.filter((r) => !r.draft && !r.prerelease)[0];
+    if (!latest) return;
+    const pick = (re) => latest.assets.find((a) => re.test(a.name));
+    const wanted = [
+      ['win', /Setup.*\.exe$/],
+      ['mac-arm', /-arm64\.dmg$/],
+      ['mac-intel', /^Ada-[\d.]+\.dmg$/],
+      ['linux', /\.AppImage$/],
+    ];
+    document.querySelectorAll('.grabs .grab').forEach((a, i) => {
+      const asset = pick(wanted[i]?.[1] ?? /$^/);
+      if (!asset) return; // a build that did not produce this platform: leave the working link alone
+      a.href = asset.browser_download_url;
+      const file = a.querySelector('.file');
+      if (file) file.textContent = asset.name;
+    });
+    document.querySelectorAll('[data-version]').forEach((el) => (el.textContent = latest.tag_name));
+  };
+
   fetch('https://api.github.com/repos/black141312/ada-releases/releases?per_page=100')
     .then((r) => (r.ok ? r.json() : null))
     .then((releases) => {
@@ -95,6 +119,7 @@
         /* storage full or blocked — the number still shows, it just refetches next time */
       }
       show(n);
+      pointAtLatest(releases);
     })
     .catch(() => {
       /* offline, rate-limited, GitHub down: the line stays hidden, the page is unchanged */
