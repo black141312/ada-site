@@ -51,7 +51,10 @@
     <main id="top">
       <!-- ── hero ───────────────────────────────────────────────────────── -->
       <section class="hero">
-        <p class="eyebrow"><span class="mk">&gt;&#8201;&lt;</span> v0.1.35 &middot; Windows, macOS, Linux</p>
+        <p class="eyebrow">
+          <span class="mk">&gt;&#8201;&lt;</span> <span data-version>v0.1.40</span> &middot; Windows,
+          macOS, Linux
+        </p>
         <h1>
           The expensive part of AI coding isn't the model.
           It's <em>how much you send it</em>.
@@ -320,9 +323,52 @@
         <a class="ghost" href="report.html">Read the full report &mdash; screenshots, method, limits &rarr;</a>
       </section>
 
+      <!-- ── omniroute ───────────────────────────────────────────────────── -->
+      <section id="gateway" class="band">
+        <p class="eyebrow"><span class="mk">&gt;&#8201;&lt;</span> 05 / your own providers</p>
+        <h2>Or point Ada at a gateway you run yourself.</h2>
+        <p class="say">
+          Ada talks to any OpenAI-compatible endpoint. OmniRoute is one you run on your own machine:
+          it holds your provider accounts, and Ada treats it like any other backend. Settings &rarr;
+          Connections installs it and connects, in one click.
+        </p>
+
+        <div class="cards">
+          <article>
+            <h3>One button, not a setup guide</h3>
+            <p>
+              Ada installs it into a folder it owns, starts it, and points itself at it &mdash; no
+              <code>sudo</code>, no npm prefix to reconfigure. If Node is too old or the port is
+              taken, the card says which, and what to run.
+            </p>
+          </article>
+          <article>
+            <h3>Your keys stay yours</h3>
+            <p>
+              Providers are connected in OmniRoute's own dashboard, on <code>localhost</code>. Ada
+              never sees those keys, and nothing you send through the gateway is metered or billed
+              here.
+            </p>
+          </article>
+          <article>
+            <h3>Reversible in one click</h3>
+            <p>
+              Disconnect points Ada back at its own backend, and the gateway keeps running &mdash;
+              it is yours, not Ada's. Removing it is deleting one folder.
+            </p>
+          </article>
+        </div>
+
+        <p class="fine">
+          OmniRoute is a separate open-source project, and you bring your own accounts to it. It
+          needs Node 22.22.2 or newer &mdash; Ada checks before installing rather than after.
+          <a href="https://github.com/diegosouzapw/OmniRoute">OmniRoute on GitHub</a>.
+        </p>
+      </section>
+
       <!-- ── download ────────────────────────────────────────────────────── -->
       <section id="download" class="band">
-        <p class="eyebrow"><span class="mk">&gt;&#8201;&lt;</span> 05 / download</p>
+        <p class="eyebrow"><span class="mk">&gt;&#8201;&lt;</span> 06 / download</p>
         <h2>Free while it's in beta.</h2>
         <p class="say">
           Install and chat immediately with the free models &mdash; no account. Sign in with GitHub
@@ -332,31 +378,31 @@
         <div class="grabs">
           <a
             class="grab"
-            href="https://github.com/black141312/ada-releases/releases/download/v0.1.35/Ada-Setup-0.1.35.exe"
+            href="https://github.com/black141312/ada-releases/releases/download/v0.1.40/Ada-Setup-0.1.40.exe"
           >
             <span class="os">Windows</span>
-            <span class="file">Ada-Setup-0.1.35.exe</span>
+            <span class="file">Ada-Setup-0.1.40.exe</span>
           </a>
           <a
             class="grab"
-            href="https://github.com/black141312/ada-releases/releases/download/v0.1.35/Ada-0.1.35-arm64.dmg"
+            href="https://github.com/black141312/ada-releases/releases/download/v0.1.40/Ada-0.1.40-arm64.dmg"
           >
             <span class="os">macOS &middot; Apple Silicon</span>
-            <span class="file">Ada-0.1.35-arm64.dmg</span>
+            <span class="file">Ada-0.1.40-arm64.dmg</span>
           </a>
           <a
             class="grab"
-            href="https://github.com/black141312/ada-releases/releases/download/v0.1.35/Ada-0.1.35.dmg"
+            href="https://github.com/black141312/ada-releases/releases/download/v0.1.40/Ada-0.1.40.dmg"
           >
             <span class="os">macOS &middot; Intel</span>
-            <span class="file">Ada-0.1.35.dmg</span>
+            <span class="file">Ada-0.1.40.dmg</span>
           </a>
           <a
             class="grab"
-            href="https://github.com/black141312/ada-releases/releases/download/v0.1.35/Ada-0.1.35.AppImage"
+            href="https://github.com/black141312/ada-releases/releases/download/v0.1.40/Ada-0.1.40.AppImage"
           >
             <span class="os">Linux</span>
-            <span class="file">Ada-0.1.35.AppImage</span>
+            <span class="file">Ada-0.1.40.AppImage</span>
           </a>
         </div>
         <!-- Filled in by app.js from GitHub. Empty until it has a real number: a counter that
@@ -372,7 +418,7 @@
 
     <footer>
       <div class="foot">
-        <span><img src="assets/img/mark.svg" alt="" width="16" height="16" /> Ada &mdash; v0.1.35</span>
+        <span><img src="assets/img/mark.svg" alt="" width="16" height="16" /> Ada &mdash; <span data-version>v0.1.40</span></span>
         <nav>
           <a href="pricing.html">Pricing</a>
           <a href="architecture.html">Architecture</a>

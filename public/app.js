@@ -64,64 +64,69 @@
   const el = document.getElementById('dl-count');
   if (!el) return;
 
-  const KEY = 'ada.installs';
+  // v2: the old key cached the count alone. That made the cache a trap — a returning visitor took
+  // the early return and never reached the code that moves the download buttons forward, so the
+  // buttons stayed on whatever version was hardcoded in the HTML for everyone but a first-time
+  // visitor. Whatever the fetch teaches us gets cached, not just the part that was visible.
+  const KEY = 'ada.release.v2';
   const HOUR = 3600e3;
   const isInstaller = (n) => /Setup.*\.exe$/.test(n) || /\.dmg$/.test(n) || /\.AppImage$/.test(n);
 
-  const show = (n) => {
-    if (!n) return; // no number is better than a wrong one
-    el.textContent = `${n.toLocaleString()} installs so far.`;
-    el.hidden = false;
+  // Button order in the HTML. A build that did not produce one of these leaves that button alone,
+  // still pointing at the working link the page shipped with.
+  const WANTED = [/Setup.*\.exe$/, /-arm64\.dmg$/, /^Ada-[\d.]+\.dmg$/, /\.AppImage$/];
+
+  const apply = ({ n, tag, links }) => {
+    if (n) {
+      // no number is better than a wrong one
+      el.textContent = `${n.toLocaleString()} installs so far.`;
+      el.hidden = false;
+    }
+    document.querySelectorAll('.grabs .grab').forEach((a, i) => {
+      const asset = links?.[i];
+      if (!asset) return;
+      a.href = asset.url;
+      const file = a.querySelector('.file');
+      if (file) file.textContent = asset.name;
+    });
+    if (tag) document.querySelectorAll('[data-version]').forEach((v) => (v.textContent = tag));
+  };
+
+  const read = (releases) => {
+    const latest = releases.filter((r) => !r.draft && !r.prerelease)[0];
+    return {
+      n: releases.reduce(
+        (sum, rel) => sum + (rel.assets || []).reduce((a, x) => a + (isInstaller(x.name) ? x.download_count : 0), 0),
+        0,
+      ),
+      tag: latest?.tag_name || null,
+      links: WANTED.map((re) => {
+        const asset = latest?.assets.find((a) => re.test(a.name));
+        return asset ? { url: asset.browser_download_url, name: asset.name } : null;
+      }),
+    };
   };
 
   try {
     const hit = JSON.parse(localStorage.getItem(KEY) || 'null');
-    if (hit && Date.now() - hit.at < HOUR) return show(hit.n);
+    if (hit && Date.now() - hit.at < HOUR) return apply(hit);
   } catch {
     /* private mode, or someone put junk in localStorage — just refetch */
   }
-
-  // The download buttons are hardcoded to a version, which means they are wrong the moment the next
-  // release ships — they sat on v0.1.28 for seven releases. Since the count is already fetching
-  // every release, point them at the newest one while we are here. The HTML keeps a real, working
-  // link so the page is never broken with JS off; this only ever moves it forward.
-  const pointAtLatest = (releases) => {
-    const latest = releases.filter((r) => !r.draft && !r.prerelease)[0];
-    if (!latest) return;
-    const pick = (re) => latest.assets.find((a) => re.test(a.name));
-    const wanted = [
-      ['win', /Setup.*\.exe$/],
-      ['mac-arm', /-arm64\.dmg$/],
-      ['mac-intel', /^Ada-[\d.]+\.dmg$/],
-      ['linux', /\.AppImage$/],
-    ];
-    document.querySelectorAll('.grabs .grab').forEach((a, i) => {
-      const asset = pick(wanted[i]?.[1] ?? /$^/);
-      if (!asset) return; // a build that did not produce this platform: leave the working link alone
-      a.href = asset.browser_download_url;
-      const file = a.querySelector('.file');
-      if (file) file.textContent = asset.name;
-    });
-    document.querySelectorAll('[data-version]').forEach((el) => (el.textContent = latest.tag_name));
-  };
 
   fetch('https://api.github.com/repos/black141312/ada-releases/releases?per_page=100')
     .then((r) => (r.ok ? r.json() : null))
     .then((releases) => {
       if (!Array.isArray(releases)) return;
-      const n = releases.reduce(
-        (sum, rel) => sum + (rel.assets || []).reduce((a, x) => a + (isInstaller(x.name) ? x.download_count : 0), 0),
-        0,
-      );
+      const data = read(releases);
       try {
-        localStorage.setItem(KEY, JSON.stringify({ n, at: Date.now() }));
+        localStorage.setItem(KEY, JSON.stringify({ ...data, at: Date.now() }));
       } catch {
-        /* storage full or blocked — the number still shows, it just refetches next time */
+        /* storage full or blocked — everything still applies, it just refetches next time */
       }
-      show(n);
-      pointAtLatest(releases);
+      apply(data);
     })
     .catch(() => {
-      /* offline, rate-limited, GitHub down: the line stays hidden, the page is unchanged */
+      /* offline, rate-limited, GitHub down: the page keeps the links it shipped with */
     });
 })();
