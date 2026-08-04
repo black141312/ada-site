@@ -50,3 +50,53 @@
     { threshold: 0.3 },
   ).observe(meter);
 })();
+
+// Install count, read from GitHub at page load.
+//
+// Counting every asset is wrong by a factor of three: electron-updater polls latest.yml on a timer
+// and each update pulls a blockmap, so a release with 9 installs can show 25 "downloads". Only the
+// installers are people.
+//
+// Unauthenticated GitHub allows 60 requests an hour per IP, which one page load per visitor will
+// not trouble — but the answer is cached for an hour anyway, because the number does not move fast
+// enough to be worth asking twice.
+(() => {
+  const el = document.getElementById('dl-count');
+  if (!el) return;
+
+  const KEY = 'ada.installs';
+  const HOUR = 3600e3;
+  const isInstaller = (n) => /Setup.*\.exe$/.test(n) || /\.dmg$/.test(n) || /\.AppImage$/.test(n);
+
+  const show = (n) => {
+    if (!n) return; // no number is better than a wrong one
+    el.textContent = `${n.toLocaleString()} installs so far.`;
+    el.hidden = false;
+  };
+
+  try {
+    const hit = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (hit && Date.now() - hit.at < HOUR) return show(hit.n);
+  } catch {
+    /* private mode, or someone put junk in localStorage — just refetch */
+  }
+
+  fetch('https://api.github.com/repos/black141312/ada-releases/releases?per_page=100')
+    .then((r) => (r.ok ? r.json() : null))
+    .then((releases) => {
+      if (!Array.isArray(releases)) return;
+      const n = releases.reduce(
+        (sum, rel) => sum + (rel.assets || []).reduce((a, x) => a + (isInstaller(x.name) ? x.download_count : 0), 0),
+        0,
+      );
+      try {
+        localStorage.setItem(KEY, JSON.stringify({ n, at: Date.now() }));
+      } catch {
+        /* storage full or blocked — the number still shows, it just refetches next time */
+      }
+      show(n);
+    })
+    .catch(() => {
+      /* offline, rate-limited, GitHub down: the line stays hidden, the page is unchanged */
+    });
+})();

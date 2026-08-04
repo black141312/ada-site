@@ -573,6 +573,13 @@ td.r {
   font-size: 14px;
   color: var(--dim);
 }
+/* The install count. Sits above the fine print and reads a shade stronger than it — it is a fact
+   about the product, not a caveat about installing. */
+.dl-count {
+  margin-bottom: 6px;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
 
 /* ── footer ──────────────────────────────────────────────── */
 footer {
