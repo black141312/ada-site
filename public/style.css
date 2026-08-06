@@ -709,6 +709,11 @@ footer {
 .price span {
   margin-left: 3px;
 }
+.price s {
+  font-size: 22px;
+  color: var(--dim);
+  margin-right: 6px;
+}
 .tag {
   margin: 0 0 22px;
   font-size: 14.5px;
