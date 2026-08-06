@@ -228,7 +228,12 @@
         $('toggle').hidden = !hasYearly;
         if (!hasYearly) return;
         const ref = paid.find((p) => p.prices && p.prices.MONTHLY > 0 && p.prices.YEARLY > 0);
-        if (ref) $('save').textContent = ` −${Math.round((1 - ref.prices.YEARLY / (ref.prices.MONTHLY * 12)) * 100)}%`;
+        if (ref) {
+          // Only claim savings when yearly really is cheaper — a discounted monthly price can
+          // leave the catalog's yearly price higher, and "−-1567%" is not a selling point.
+          const save = Math.round((1 - ref.prices.YEARLY / (ref.prices.MONTHLY * 12)) * 100);
+          $('save').textContent = save > 0 ? ` −${save}%` : '';
+        }
         const set = (p) => {
           period = p;
           $('t-monthly').classList.toggle('on', p === 'MONTHLY');
