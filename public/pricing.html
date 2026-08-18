@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Pricing — Ada</title>
+    <link rel="canonical" href="https://adacodelabs.com/pricing.html" />
     <meta
       name="description"
       content="Free forever with your own key. Hosted routing $1/month, discounted from $19. Custom pricing for teams that need seats and SSO."
@@ -16,6 +17,55 @@
         var t = localStorage.getItem('ada-theme');
         if (t) document.documentElement.dataset.theme = t;
       } catch (e) {}
+    </script>
+    <!-- ponytail: mirrors the <dl class="faq"> below; regenerate if the answers change -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Is Free actually free, or a trial?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Actually free, with no time limit. Ada runs on your machine; with your own key there's nothing for us to meter. The repo map and semantic index run locally, so they cost nothing to operate either."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does my code leave my machine?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Only what a turn sends to the model you chose — the same as any AI coding tool. Indexing is different: the embedding model runs on your machine, so your codebase is never uploaded to be indexed."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What happens if I stop paying for Pro?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The app keeps working. You drop to Free and add your own key. Nothing you built is locked up, because nothing you built lives with us."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can we run the backend ourselves?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes — that's the Team tier's normal deployment. The backend is a container you run on your own infrastructure, with seats and OIDC pointing at your identity provider."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Ada is in beta. What does that mean for the price?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "It ships, it's signed and notarized, and it updates itself. It's early, so access is still granted one account at a time — ask and we'll add you."
+            }
+          }
+        ]
+      }
     </script>
   </head>
   <body>

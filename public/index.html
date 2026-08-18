@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Ada — an agent-first code editor</title>
+    <link rel="canonical" href="https://adacodelabs.com/" />
     <meta
       name="description"
       content="A desktop code editor built around an agent that sends only what a turn needs. Measured against Claude Code: half the context, 35–70% less cost."
@@ -22,7 +23,31 @@
       property="og:description"
       content="The expensive part of AI coding isn't the model. It's how much you send it."
     />
+    <meta property="og:url" content="https://adacodelabs.com/" />
     <meta property="og:type" content="website" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Ada",
+        "applicationCategory": "DeveloperApplication",
+        "applicationSubCategory": "Code editor",
+        "operatingSystem": "Windows, macOS, Linux",
+        "description": "An agent-first desktop code editor. The agent sends only what a turn needs: measured against Claude Code, about half the context and 35-70% less cost on the same tasks.",
+        "featureList": [
+          "Agent-first editing loop that selects context per turn",
+          "Local repo map and semantic index, so code is never uploaded to be indexed",
+          "Bring your own API key, or point at a gateway you run yourself",
+          "Self-updating, signed and notarized desktop builds"
+        ],
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "description": "Free forever with your own API key"
+        }
+      }
+    </script>
   </head>
   <body>
     <header class="bar">

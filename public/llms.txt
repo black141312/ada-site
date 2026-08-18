@@ -1,0 +1,20 @@
+# Ada
+
+> An agent-first desktop code editor. The agent sends only what a turn needs,
+> so the same task costs less. Measured against Claude Code on five tasks in one
+> repository: about half the context and 35-70% less cost.
+
+- Platforms: Windows, macOS, Linux. Runs locally; ships signed and notarized.
+- Free forever with your own API key. Pro is a hosted key; Team runs the backend
+  as a container on your own infrastructure with OIDC seats.
+- Indexing (repo map + semantic index) runs on your machine. Your codebase is
+  never uploaded to be indexed.
+- Status: beta, access granted per account on request.
+
+## Pages
+
+- [Product and benchmark](https://adacodelabs.com/index.html): what it is, the four decisions that cut context, headline numbers.
+- [Pricing](https://adacodelabs.com/pricing.html): Free / Pro / Team, and answers to the common questions.
+- [Full report](https://adacodelabs.com/report.html): the five benchmark tasks, per-task tokens and cost, method.
+- [Architecture](https://adacodelabs.com/architecture.html): request pipeline, provider wire format, how a session stays grounded.
+- [Contact](https://adacodelabs.com/contact.html): access requests, bugs, security.
