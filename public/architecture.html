@@ -170,6 +170,11 @@
         </p>
 
         <div class="a-strats">
+          <div class="a-strat">
+            <div class="n">auto</div>
+            <div class="t">cheap signals &rarr; a model only if they tie</div>
+            <p>Picks the architecture per request: a source too big for the window goes to <span style="font-family: var(--mono)">rlm</span>, a question or a one-liner to <span style="font-family: var(--mono)">react</span>, and anything longer is classified by the worker model. Set it once &mdash; the backend can push it to every client.</p>
+          </div>
           <div class="a-strat def">
             <div class="n">react <span class="a-flag">default</span></div>
             <div class="t">reason &rarr; act &rarr; observe &rarr; repeat</div>
@@ -189,6 +194,11 @@
             <div class="n">toolsmith</div>
             <div class="t">docs &rarr; fan out &rarr; skills</div>
             <p>Reads a connected integration's docs, then spawns a sub-agent per capability to author skills for it.</p>
+          </div>
+          <div class="a-strat">
+            <div class="n">rlm</div>
+            <div class="t">chunk &rarr; fan out &rarr; fold &rarr; answer</div>
+            <p>For a source too big to read. One worker per chunk holds the question while it reads its own slice; the model answering never sees the source, only their notes. Nothing is summarised before the question is asked &mdash; unlike compaction, which decides what to forget first. If the notes outgrow the answering model they are merged in passes until they fit. Measured on a 10&nbsp;MB listing: 175 workers, every match found, nothing invented.</p>
           </div>
         </div>
 
